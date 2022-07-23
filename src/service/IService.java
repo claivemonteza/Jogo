@@ -10,5 +10,5 @@ public interface IService<T> {
 	public T delete(int posicao);
 	public T findBy(int posicao);
 	public List<T> list();
-	
+	public List<T> listRandom();
 }

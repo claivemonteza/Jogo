@@ -19,7 +19,7 @@ public class MenuMoeda {
 	public void init() {
 		try {
 			System.out.println("============ Moeda ============\n" + "1- Adicionar\n"
-					+ "2- Adicionar Moedas configuradas\n" + "3- remover\n" + "4- Listar\n" + "5- voltar");
+					+ "2- Adicionar Moedas\n" + "3- remover\n" + "4- Listar\n" + "5- Lista Aleatoria\n" + "6- voltar");
 			int opcao = sc.nextInt();
 
 			switch (opcao) {
@@ -36,6 +36,9 @@ public class MenuMoeda {
 				lista();
 				break;
 			case 5:
+				listaAleatoria();
+				break;
+			case 6:
 				Menu.init();
 				break;
 			default:
@@ -78,6 +81,11 @@ public class MenuMoeda {
 
 	public void lista() {
 		System.out.println("============ Lista de Moedas ============\n" + this.moedaService.list());
+		init();
+	}
+	
+	public void listaAleatoria() {
+		System.out.println("============ Lista Aletoria de Moedas ============\n" + this.moedaService.listRandom());
 		init();
 	}
 

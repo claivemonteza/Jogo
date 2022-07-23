@@ -1,17 +1,8 @@
 package controller;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.Stack;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import Executar.Menu;
 import model.Jogador;
@@ -23,13 +14,11 @@ public class MenuJogar {
 
 	private static Scanner sc = new Scanner(System.in);
 	private MoedaService moedaService;
-	private JogadorService jogadoService;
+	private JogadorService jogadorService;
 
 	public MenuJogar(MoedaService moedaService, JogadorService jogadoService) {
 		this.moedaService = moedaService;
-		this.jogadoService = jogadoService;
-		adicionarMoedasConfig();
-		adicionarJogadorConfig();
+		this.jogadorService = jogadoService;
 		init();
 	}
 
@@ -53,104 +42,73 @@ public class MenuJogar {
 
 	public void distribuirasMoedas() {
 
-		Stack<Moeda> moedas = new Stack<>();
-		moedas.addAll(this.moedaService.list());
 		
-
-		boolean check = verificarTamanho();
-		//System.out.println(this.moedaService.list());
-		if (check) {
-			int contador = Math.floorDiv(this.moedaService.list().size(), this.jogadoService.list().size());
+		 Stack<Moeda> moedas = new Stack<>(); moedas.addAll(this.moedaService.list());
+		  
+		 Stack<Jogador> jogadores = new Stack<>();
+		 jogadores.addAll(this.jogadorService.list());
+		 
+		try {
+			boolean verficarJogador = verificarNumeroDeJogadores();
+			boolean verficarMoeda = verficarMoedas();
 			
-				for (int i = 0; i < moedas.size(); i++) {
-					for (Jogador jogador : this.jogadoService.list()) {
+			if (!verficarJogador) {
+				System.out.println("Não sera possivel jogar! Verifique a numero de jogadores!");
+				init();
+			}
+
+			if (!verficarMoeda) {
+				System.out.println("Não sera possivel jogar! Verifique a quantidade de moedas!");
+				init();
+			}
+
+			int contador = this.moedaService.list().size() / this.jogadorService.list().size();
+
+			
+				/*
+				 * for (int j = 1; j <= this.moedaService.list().size(); j++) { Moeda moeda =
+				 * this.moedaService.delete(j); if (jogador.getMoedas().size() < contador) {
+				 * jogador.add(moeda); } }
+				 */
+				for (int i=0; i<this.moedaService.listRandom().size(); i++) {
 					Moeda moeda = moedas.pop();
+					for (Jogador jogador : this.jogadorService.listRandom()) {
 					if (jogador.getMoedas().size() < contador) {
 						jogador.add(moeda);
-						jogador.setValor(i);
+						jogador.setValor(calcularValorTotal(jogador.getMoedas()));
 					}
 				}
 			}
-		}
+			System.out.println(this.jogadorService.list().toString());
 
-		System.out.println(this.jogadoService.list());
+			init();
+		} catch (Exception e) {
+			System.out.println("Ocorreu um erro!");
+			init();
+		}
 	}
 
-	
-	public boolean calcularValorTotal(List<Moeda> moedas){
-		double valor=0;
+	public double calcularValorTotal(List<Moeda> moedas) {
+		double valor = 0;
 		for (Moeda moeda : moedas) {
-			moed
+			valor = valor + (moeda.getValor() * moeda.getCambio());
 		}
+		return valor;
 	}
-	
-	public boolean verificarTamanho() {
-		if (this.moedaService.list().size() % 2 == 0) {
+
+	public boolean verificarNumeroDeJogadores() {
+		if (this.jogadorService.list().size() != 0 && this.jogadorService.list().size() % 2 == 0) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public void adicionarMoedasConfig() {
-		Moeda moeda = new Moeda("MZN", 4, 1);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("MZN", 6, 1);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("MZN", 25, 1);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("MZN", 20, 1);
-		this.moedaService.Add(moeda);
-
-		moeda = new Moeda("EUR", 4, 71);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("EUR", 6, 71);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("EUR", 25, 71);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("EUR", 20, 71);
-		this.moedaService.Add(moeda);
-
-		moeda = new Moeda("ZAR", 4, 4);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("ZAR", 6, 4);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("ZAR", 25, 4);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("ZAR", 20, 4);
-		this.moedaService.Add(moeda);
-
-		moeda = new Moeda("USD", 4, 67);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("USD", 6, 67);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("USD", 25, 67);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("USD", 20, 67);
-		this.moedaService.Add(moeda);
-
-		moeda = new Moeda("GBP", 4, 84);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("GBP", 6, 84);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("GBP", 25, 84);
-		this.moedaService.Add(moeda);
-		moeda = new Moeda("GBP", 20, 84);
-		this.moedaService.Add(moeda);
-
-	}
-
-	public void adicionarJogadorConfig() {
-		List<Moeda> moedas = new ArrayList<>();
-		Jogador jogador = new Jogador("Joao", moedas, 0);
-		this.jogadoService.Add(jogador);
-		jogador = new Jogador("Antonio", moedas, 0);
-		this.jogadoService.Add(jogador);
-
-		jogador = new Jogador("Maria", moedas, 0);
-		this.jogadoService.Add(jogador);
-		jogador = new Jogador("Jose", moedas, 0);
-		this.jogadoService.Add(jogador);
-
+	public boolean verficarMoedas() {
+		if (this.moedaService.list().size() != 0 && this.moedaService.list().size() % 2 == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
