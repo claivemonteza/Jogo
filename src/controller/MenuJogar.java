@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
@@ -41,17 +42,11 @@ public class MenuJogar {
 	}
 
 	public void distribuirasMoedas() {
-
-		
-		 Stack<Moeda> moedas = new Stack<>(); moedas.addAll(this.moedaService.list());
-		  
-		 Stack<Jogador> jogadores = new Stack<>();
-		 jogadores.addAll(this.jogadorService.list());
-		 
 		try {
+
 			boolean verficarJogador = verificarNumeroDeJogadores();
 			boolean verficarMoeda = verficarMoedas();
-			
+
 			if (!verficarJogador) {
 				System.out.println("Não sera possivel jogar! Verifique a numero de jogadores!");
 				init();
@@ -64,28 +59,37 @@ public class MenuJogar {
 
 			int contador = this.moedaService.list().size() / this.jogadorService.list().size();
 
-			
-				/*
-				 * for (int j = 1; j <= this.moedaService.list().size(); j++) { Moeda moeda =
-				 * this.moedaService.delete(j); if (jogador.getMoedas().size() < contador) {
-				 * jogador.add(moeda); } }
-				 */
-				for (int i=0; i<this.moedaService.listRandom().size(); i++) {
-					Moeda moeda = moedas.pop();
-					for (Jogador jogador : this.jogadorService.listRandom()) {
-					if (jogador.getMoedas().size() < contador) {
-						jogador.add(moeda);
-						jogador.setValor(calcularValorTotal(jogador.getMoedas()));
+			Stack<Moeda> moedas = new Stack<>();
+			moedas.addAll(this.moedaService.listRandom());
+
+			List<Moeda> jogadorMoeda;
+			int x = 0;
+			for (int i = 0; i < this.jogadorService.list().size(); i++) {
+				Jogador jogador = this.jogadorService.findBy(i);
+				//System.out.println(jogador);
+				jogadorMoeda = new ArrayList<>();
+				while ( x < moedas.size()) {
+					if (jogadorMoeda.size() < contador) {
+						Moeda moeda = moedas.pop();
+						jogadorMoeda.add(moeda);
+
+					} else {
+						break;
 					}
 				}
+				jogador.setMoedas(jogadorMoeda);
+				jogador.setValor(calcularValorTotal(jogadorMoeda));
+				//System.out.println(jogador);
 			}
-			System.out.println(this.jogadorService.list().toString());
+			System.out.println(this.jogadorService.list());
 
 			init();
+
 		} catch (Exception e) {
 			System.out.println("Ocorreu um erro!");
 			init();
 		}
+
 	}
 
 	public double calcularValorTotal(List<Moeda> moedas) {

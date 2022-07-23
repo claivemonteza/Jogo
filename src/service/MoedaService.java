@@ -23,7 +23,11 @@ public class MoedaService implements IService<Moeda> {
 
 	@Override
 	public Moeda delete(int posicao) {
-		return this.moedas.remove(posicao - 1);
+		return this.moedas.remove(posicao);
+	}
+	
+	public void delete(Moeda posicao) {
+		 this.moedas.remove(posicao);
 	}
 
 	@Override

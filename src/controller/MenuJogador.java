@@ -20,7 +20,7 @@ public class MenuJogador {
 	}
 
 	public void init() {
-		try {
+	//	try {
 			System.out.println("============ Jogador ============\n" + "1- Adicionar\n"+"2- Adicionar Jogadores\n" + "3- remover\n" + "4- Listar\n"
 					+ "5- Lista Aleatoria\n"
 					+ "6- voltar");
@@ -48,10 +48,9 @@ public class MenuJogador {
 			default:
 				System.exit(0);
 			}
-		} catch (Exception e) {
-			System.out.println("Ocorreu erro!");
-			init();
-		}
+			/*
+			 * } catch (Exception e) { System.out.println("Ocorreu erro!"); init(); }
+			 */
 	}
 
 	public void adicionar() {
